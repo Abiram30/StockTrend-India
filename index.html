@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #121212; color: white; padding: 20px; }
+        h1 { color: cyan; }
+        form { margin-bottom: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        input { background: #222; color: white; border: 1px solid cyan; }
+        button { background: cyan; color: black; border: none; cursor: pointer; font-weight: bold; }
+        
+        .container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 20px; 
+            width: 90%; 
+            margin: auto; 
+        }
+
+        .box {
+            padding: 15px; 
+            border: 2px solid cyan; 
+            background: #222; 
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .full-width { width: 90%; }
+        .half-width { width: 45%; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid cyan; padding: 8px; text-align: left; }
+        th { background: cyan; color: black; }
+
+        .news-container { margin-top: 20px; }
+        .news-title { font-size: 18px; font-weight: bold; color: cyan; margin-bottom: 10px; }
+        .news-item {
+            background: #222; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            border-radius: 5px; 
+            border-left: 5px solid cyan;
+            transition: 0.3s;
+        }
+        .news-item:hover { background: #333; }
+        .news-item a {
+            text-decoration: none; 
+            color: white; 
+            font-weight: bold; 
+            display: block; 
+            font-size: 16px; 
+        }
+        .news-item a:hover { color: cyan; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>📈 Stock Market Prediction 📉</h1>
+    <form method="POST">
+        <input type="text" name="symbol1" placeholder="Stock Symbol (AAPL)" required>
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if symbol1 %}
+        <div class="container" style="{% if not symbol2 %}flex-direction: column; align-items: center;{% endif %}">
+            <!-- Stock 1 -->
+            <div class="box {% if symbol2 %}half-width{% else %}full-width{% endif %}">
+                <h2>Stock: {{ symbol1 }}</h2>
+                <h3>📌 Current Price: ${{ current_price1 }}</h3>
+                <h3>📅 Predicted Price (Next 60 Days): ₹{{ predicted_price1 }}</h3>
+                <div>{{ plot1|safe }}</div>
+
+                <h2>Market Insights</h2>
+                <table>
+                    <tr><th>Previous Close</th><td>{{ info1.get('previousClose', 'N/A') }}</td></tr>
+                    <tr><th>Open</th><td>{{ info1.get('open', 'N/A') }}</td></tr>
+                    <tr><th>PE Ratio</th><td>{{ info1.get('trailingPE', 'N/A') }}</td></tr>
+                    <tr><th>1-Year Target</th><td>{{ info1.get('targetMeanPrice', 'N/A') }}</td></tr>
+                    <tr><th>52-Week High</th><td>{{ info1.get('fiftyTwoWeekHigh', 'N/A') }}</td></tr>
+                    <tr><th>52-Week Low</th><td>{{ info1.get('fiftyTwoWeekLow', 'N/A') }}</td></tr>
+                </table>
+
+                <h2 class="news-title">📰 Latest News for {{ symbol1 }}</h2>
+                <div class="news-container">
+                    {% for news in news1 %}
+                        <div class="news-item">
+                            <a href="{{ news.link }}" target="_blank">• {{ news.title }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+          
+        </div>
+    {% endif %}
+</body>
+</html>
